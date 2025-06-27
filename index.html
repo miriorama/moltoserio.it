@@ -2,79 +2,66 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Pulsante Imprendibile Verticale</title>
+  <title>Clicca Seriamente</title>
   <style>
     body {
       margin: 0;
       height: 100vh;
       overflow: hidden;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      position: relative;
       background: #f4f4f4;
+      font-family: sans-serif;
     }
 
     #magic-button {
-      position: absolute;
       background-color: #00b7ff;
       color: white;
       padding: 1rem 2rem;
       border: none;
       border-radius: 10px;
-      font-size: 3rem;
+      font-size: 1rem;
       font-weight: bold;
       text-align: center;
       cursor: pointer;
-      transition: top 0.15s, left 0.15s;
-      line-height: 1.4;
+      transition: background-color 0.2s;
+    }
+
+    #message {
+      margin-top: 2rem;
+      font-size: 1.2rem;
+      text-align: center;
+      color: #333;
+      min-height: 1.5em;
     }
   </style>
 </head>
 <body>
 
   <button id="magic-button">CLICCA QUI SERIAMENTE<br>PER SCARICARE LA PRESENTAZIONE</button>
+  <div id="message"></div>
 
   <script>
+    const messages = [
+      "Questo non era un clic serio.",
+      "Hai appena sfiorato. Dai.",
+      "Serve più serietà.",
+      "Clicca con più convinzione.",
+      "Mmmmmmm non sei convinta.",
+      "Clicca come se ci credessi seriamente.",
+      "Non è un gioco, è una questione seria.",
+      "Ancora no. Ma ci sei quasi."
+    ];
+
     const button = document.getElementById('magic-button');
-    const padding = 40;
+    const message = document.getElementById('message');
 
-    function moveVerticalAndRandomX(cursorY) {
-      const bw = button.offsetWidth;
-      const bh = button.offsetHeight;
-      const sw = window.innerWidth;
-      const sh = window.innerHeight;
-
-      // Posizione orizzontale: random
-      const newX = Math.floor(Math.random() * (sw - bw - 2 * padding)) + padding;
-
-      // Verticale: scegli tra top o bottom
-      const distanceTop = cursorY;
-      const distanceBottom = sh - cursorY;
-
-      const newY = distanceTop > distanceBottom ? padding : sh - bh - padding;
-
-      button.style.left = `${newX}px`;
-      button.style.top = `${newY}px`;
-    }
-
-    const hoverSupported = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-
-    if (hoverSupported) {
-      document.addEventListener('mousemove', (e) => {
-        const bx = button.offsetLeft + button.offsetWidth / 2;
-        const by = button.offsetTop + button.offsetHeight / 2;
-        const distance = Math.hypot(e.clientX - bx, e.clientY - by);
-        if (distance < 150) {
-          moveVerticalAndRandomX(e.clientY);
-        }
-      });
-    } else {
-      button.addEventListener('click', (e) => {
-        moveVerticalAndRandomX(e.clientY);
-        e.preventDefault();
-      });
-    }
+    button.addEventListener('click', () => {
+      const randomIndex = Math.floor(Math.random() * messages.length);
+      message.textContent = messages[randomIndex];
+    });
   </script>
 
 </body>
