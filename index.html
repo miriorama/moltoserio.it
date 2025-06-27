@@ -2,50 +2,80 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Sono molto serio</title>
+  <title>Pulsante Imprendibile Verticale</title>
   <style>
-    body{
-      height:100vh;margin:0;overflow:hidden;
-      display:flex;justify-content:center;align-items:center;
-      background:#f0f0f0;position:relative;
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      background: #f4f4f4;
     }
-    #magic-button{
-      position:absolute;
-      padding:1rem 2rem;
-      background:#00b7ff;color:#fff;border:none;border-radius:10px;
-      font-size:3rem;cursor:pointer;
-      transition:top .2s,left .2s;
+
+    #magic-button {
+      position: absolute;
+      background-color: #00b7ff;
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 3rem;
+      font-weight: bold;
+      text-align: center;
+      cursor: pointer;
+      transition: top 0.15s, left 0.15s;
+      line-height: 1.4;
     }
   </style>
 </head>
 <body>
 
-<button id="magic-button">CLICCA QUI SERIAMENTE<br>PER SCARICARE LA PRESENTAZIONE</button>
+  <button id="magic-button">CLICCA QUI SERIAMENTE<br>PER SCARICARE LA PRESENTAZIONE</button>
 
-<script>
-const button = document.getElementById('magic-button');
-const padding = 100;               // margine anti-fuga dai bordi
+  <script>
+    const button = document.getElementById('magic-button');
+    const padding = 40;
 
-function moveButton(e){
-  const maxX = window.innerWidth  - button.offsetWidth  - padding;
-  const maxY = window.innerHeight - button.offsetHeight - padding;
-  const newX = Math.floor(Math.random() * maxX);
-  const newY = Math.floor(Math.random() * maxY);
-  button.style.left = newX + 'px';
-  button.style.top  = newY + 'px';
-  if (e) { e.preventDefault(); }   // evita click “vuoti” su mobile
-}
+    function moveVerticalAndRandomX(cursorY) {
+      const bw = button.offsetWidth;
+      const bh = button.offsetHeight;
+      const sw = window.innerWidth;
+      const sh = window.innerHeight;
 
-/* Verifica se il dispositivo supporta l’hover (mouse desktop)            */
-/* (hover: hover) = c’è un puntatore fine con capacità di hover           */
-const hoverSupported = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      // Posizione orizzontale: random
+      const newX = Math.floor(Math.random() * (sw - bw - 2 * padding)) + padding;
 
-if (hoverSupported) {
-  button.addEventListener('mouseover', moveButton);   // desktop
-} else {
-  button.addEventListener('click', moveButton);       // mobile
-}
-</script>
+      // Verticale: scegli tra top o bottom
+      const distanceTop = cursorY;
+      const distanceBottom = sh - cursorY;
+
+      const newY = distanceTop > distanceBottom ? padding : sh - bh - padding;
+
+      button.style.left = `${newX}px`;
+      button.style.top = `${newY}px`;
+    }
+
+    const hoverSupported = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    if (hoverSupported) {
+      document.addEventListener('mousemove', (e) => {
+        const bx = button.offsetLeft + button.offsetWidth / 2;
+        const by = button.offsetTop + button.offsetHeight / 2;
+        const distance = Math.hypot(e.clientX - bx, e.clientY - by);
+        if (distance < 150) {
+          moveVerticalAndRandomX(e.clientY);
+        }
+      });
+    } else {
+      button.addEventListener('click', (e) => {
+        moveVerticalAndRandomX(e.clientY);
+        e.preventDefault();
+      });
+    }
+  </script>
 
 </body>
 </html>
